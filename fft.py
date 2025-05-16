@@ -41,32 +41,25 @@ for i in range(5):
     # plt.xticks(fontsize=14)
     # plt.yticks(fontsize=14)
 
-    br_hr_signal = np.unwrap(np.angle(rangeFFT_avg[:, range_idx]))
-    br_hr_time = np.arange(0, M * T_frame, T_frame)
+    br_signal = np.unwrap(np.angle(rangeFFT_avg[:, range_idx]))
+    br_time = np.arange(0, M * T_frame, T_frame)
     f_frame = 1 / T_frame
     freq_br = np.arange(0, M) * (f_frame / M)
-    br_hr_filter = (freq_br >= 0.2) & (freq_br <= 0.6)
-    br_hr_filtered = np.fft.fft(br_hr_signal) * br_hr_filter
+    br_filter = (freq_br >= 0.2) & (freq_br <= 0.6)
+    br_filtered = np.fft.fft(br_signal) * br_filter
     freq_br = freq_br * 60
 
-    br_hr_frequency = np.abs(np.fft.fft(br_hr_signal))
+    br_frequency = np.abs(np.fft.fft(br_signal))
 
     br_idx = np.where((freq_br >= 8) & (freq_br <= 30))[0]
-    hr_idx = np.where((freq_br >= 60) & (freq_br <= 200))[0]
 
     br_freqs = freq_br[br_idx]
-    hr_freqs = freq_br[hr_idx]
-    br_signal = br_hr_frequency[br_idx]
-    hr_signal = br_hr_frequency[hr_idx]
+    br_signal = br_frequency[br_idx]
 
     br_pk = np.max(br_signal)
     peak_idx_br = np.argmax(br_signal)
 
-    hr_pk = np.max(hr_signal)
-    peak_idx_hr = np.argmax(hr_signal)
-
     br = round(br_freqs[peak_idx_br])
-    hr = round(hr_freqs[peak_idx_hr])
 
     print(f"Estimated Breathing Rate: {br}")
 
@@ -86,7 +79,7 @@ for i in range(5):
     # plt.yticks(fontsize=14)
 
     plt.figure(figsize=(10, 6))
-    plt.plot(freq_br, br_hr_frequency)
+    plt.plot(freq_br, br_frequency)
     plt.xlabel("BR (bpm)", fontsize=15)
     plt.xlim(8, 30)
     plt.ylim(0, 25000)
